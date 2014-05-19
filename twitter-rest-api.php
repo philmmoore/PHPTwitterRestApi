@@ -56,7 +56,32 @@
         }
 
         protected function curlPOST($url, $parameters=''){
-            return array('msg' => 'Not yet implemented');
+
+            if (is_array($parameters)){
+                $this->addParamsToOauth($parameters);
+                $parameters = $this->parseParameters($parameters);
+            }
+
+            // Oauth
+            $base_info = $this->buildBaseString($url, 'POST', $this->oauth);
+            $composite_key = rawurlencode($this->api_secret) . '&' . rawurlencode($this->access_token_secret);
+            $oauth_signature = base64_encode(hash_hmac('sha1', $base_info, $composite_key, true));
+            $this->oauth['oauth_signature'] = $oauth_signature;
+            $header = array($this->buildAuthorizationHeader($this->oauth), 'Expect:');
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+            curl_setopt($ch, CURLOPT_HEADER, false);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, ltrim($parameters, '?'));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+            $return = curl_exec($ch);
+            curl_close($ch);
+
+            return $return;
+
         }
 
         protected function curlGET($url, $parameters=''){
