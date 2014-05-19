@@ -2,7 +2,7 @@
 
     namespace  TwitterRestApi;
 
-    Class Twitter {
+    Class Wrapper {
 
         public $api_key;
         public $api_secret;
