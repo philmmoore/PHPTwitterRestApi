@@ -9,13 +9,6 @@
 
     $twitter = new \TwitterRestApi\Wrapper($api_key, $api_secret);
     $twitter->setAccessToken($access_token, $access_token_secret);
-
-    // $response = $twitter->get('https://api.twitter.com/1.1/statuses/user_timeline.json', array('count'=>'15'));
-    // $response = $twitter->post('https://api.twitter.com/1.1/account/update_profile.json', array('location'=>'Southampton, UK'));
-
-    echo "<pre>";
-    print_r($response);
-    echo "</pre>";
-
+    $twitter->debug($twitter->get('/search/tweets.json', ['q'=>'#twitter']));
 
 ?>
